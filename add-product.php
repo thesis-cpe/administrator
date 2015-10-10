@@ -132,9 +132,8 @@ $(document).ready(function(){
                                  </ol>
                             </div>
                              <div class="col-xs-2">
-                                 <input id="btnAddFile" type="button" value="ADD"/>
-                                 <input id="btnRemove" type="button" value="REMOVE"/>
-                                 
+                                 <button class="btn btn-sm btn-primary" type="button" id="btnAddFile"><span class="fa fa-plus"></span></button>
+                                 <button class="btn btn-sm btn-danger" type="button" id="btnRemove"><span class="fa fa-minus"></span></button>
                              </div>
                         </div>
                           <br>
