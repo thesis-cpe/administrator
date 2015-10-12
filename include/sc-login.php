@@ -1,8 +1,12 @@
 <?php
-$servername = "localhost";
+/*$servername = "localhost";
 $username = "root";
 $password = "root";
-$database = "administrator";
+$database = "administrator"; */
+$servername = "ap-cdbr-azure-southeast-a.cloudapp.net";
+$username = "ba9b4578dda412";
+$password = "94bd58cb";
+$database = "back_db";
 // Create connection
 $conn = new mysqli($servername, $username, $password, $database);
 
