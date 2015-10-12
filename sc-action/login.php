@@ -41,7 +41,8 @@ and open the template in the editor.
             $_SESSION["name"] = $name;
             $_SESSION["surname"] = $surname;
             $_SESSION["status"] = $status;
-            
+            header( "location: ../news.php" );
+            exit(0);
         }else
         {
             echo "username or password not found"."<br>"; ?>

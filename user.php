@@ -1,3 +1,8 @@
+<?php
+@session_start();
+ if($_SESSION["user"])
+ {
+?>
 <!DOCTYPE html>
 
 <html>
@@ -208,3 +213,10 @@
      fixed layout. -->
 </body>
 </html>
+<?php
+ } 
+ else {
+     header( "location: index.php" );
+    exit(0);
+}
+?>

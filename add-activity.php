@@ -1,5 +1,10 @@
 <!DOCTYPE html>
-
+<?php
+@session_start();
+ if($_SESSION["user"])
+ {
+ 
+?>
 <html>
 <head>
   <meta charset="utf-8">
@@ -265,3 +270,10 @@
 </script>
 </body>
 </html>
+<?php
+ } 
+ else {
+     header( "location: index.php" );
+    exit(0);
+}
+?>
