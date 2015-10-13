@@ -2,8 +2,33 @@
 <?php
 @session_start();
  if($_SESSION["user"])
- {
- 
+ {  /*inlude db connect*/
+     include_once './include/sc-login.php'; //เชื่อมต่อฐานข้อมูล
+     include_once './include/function_lib.php'; //เรียก LIB 
+     /*ถ้ามีการ POST ค่ามา*/
+     if(isset($_POST['txtTitleActivity'])){
+                $newsId = NULL; $productID = NULL;   
+                $txtTitleActivity = $_POST['txtTitleActivity'];
+                $editor1 = $_POST['editor1'];
+                $sqlNews = "INSERT INTO news (news_name, news_details) VALUES ('$txtTitleActivity', '$editor1')";
+                $queryNews = $conn->query($sqlNews);
+                $sqlSelMaxNews = "SELECT max(news_id) AS max_news FROM `news` ";
+                $queryMaxNews = $conn->query($sqlSelMaxNews);
+                $fetchMaxNews = $queryMaxNews->fetch_assoc();
+                $resultMaxNews =   $fetchMaxNews['max_news'];
+                /*upload file*/
+              
+               if(move_uploaded_file($_FILES["fileBanner"]["tmp_name"],"drive/$randFileName".$_FILES["fileBanner"]["name"]))
+                 {
+                    $fileNameUp = $randFileName.$_FILES["fileBanner"]["name"];
+                    
+                    $sqlUpfile = "INSERT INTO file (path, news_id, product_id) VALUES ('$fileNameUp', '$resultMaxNews', '$productID')";
+                    $queryUpfile = $conn->query($sqlUpfile);
+                 }
+        
+        
+    }
+     
 ?>
 <html>
 <head>
@@ -66,7 +91,7 @@
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
-          เพิ่มกิจกรรม/แก้ไข 
+          เพิ่มกิจกรรม 
           <small><a href="index.php">กลับไปยังหน้ากิจกรรม</a></small>
       </h1>
       <ol class="breadcrumb">
@@ -92,7 +117,7 @@
                   
                   <!--content-->
                   <div class="container">
-                      <form method="post" action="#">
+                      <form method="post" action="<?php echo $_SERVER["PHP_SELF"];?>" enctype="multipart/form-data">
                         <div class="row">
                             <div class="col-xs-12"><label>ชื่อกิจกรรม:</label></div>
                         </div>
@@ -135,13 +160,13 @@
                                     </div>
                                     <!-- /.box-header -->
                                     <div class="box-body pad">
-                                      <form>
+                                     
                                             <textarea id="editor1" name="editor1" rows="10" cols="80">
                                                                     
                                             </textarea>
-                                      </form>
+                                      
                                     </div>
-                                  
+                                  </form>
                                 <!--.CK EDITOR-->
                               
                             </div>
