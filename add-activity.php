@@ -16,13 +16,15 @@
                 $queryMaxNews = $conn->query($sqlSelMaxNews);
                 $fetchMaxNews = $queryMaxNews->fetch_assoc();
                 $resultMaxNews =   $fetchMaxNews['max_news'];
+                /*Random ชื่อ*/
+                $randFileName = generateRandomString(15);
                 /*upload file*/
               
                if(move_uploaded_file($_FILES["fileBanner"]["tmp_name"],"drive/$randFileName".$_FILES["fileBanner"]["name"]))
                  {
                     $fileNameUp = $randFileName.$_FILES["fileBanner"]["name"];
-                    
-                    $sqlUpfile = "INSERT INTO file (path, news_id, product_id) VALUES ('$fileNameUp', '$resultMaxNews', '$productID')";
+                   
+                    $sqlUpfile = "INSERT INTO file (path, news_id) VALUES ('$fileNameUp', '$resultMaxNews')";
                     $queryUpfile = $conn->query($sqlUpfile);
                  }
         

@@ -35,11 +35,11 @@
 
     <form action="sc-action/login.php" method="post">
       <div class="form-group has-feedback">
-        <input name="user" type="text" class="form-control" placeholder="username">
+        <input name="user" type="text" class="form-control" placeholder="username" required/>
         <span class="fa  fa-user  form-control-feedback"></span>
       </div>
       <div class="form-group has-feedback">
-          <input name="pass" type="password" class="form-control" placeholder="password">
+          <input name="pass" type="password" class="form-control" placeholder="password" required/>
         <span class="glyphicon glyphicon-lock form-control-feedback"></span>
       </div>
       <div class="row">
