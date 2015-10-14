@@ -13,29 +13,39 @@
         $resultSelNewsEdit = $querySelNewsEdit->fetch_assoc();
         
      /*ถ้ามีการ POST ค่ามา*/
-     if(isset($_POST['txtTitleActivity'])){
+     if(isset($_POST['btnSubmit'])){
                 $newsId = NULL; $productID = NULL;   
                 $txtTitleActivity = $_POST['txtTitleActivity'];
                 $editor1 = $_POST['editor1'];
-                /*$sqlNews = "INSERT INTO news (news_name, news_details) VALUES ('$txtTitleActivity', '$editor1')";
-                $queryNews = $conn->query($sqlNews);
-                $sqlSelMaxNews = "SELECT max(news_id) AS max_news FROM `news` ";
-                $queryMaxNews = $conn->query($sqlSelMaxNews);
-                $fetchMaxNews = $queryMaxNews->fetch_assoc();
-                $resultMaxNews =   $fetchMaxNews['max_news']; */
+                $hdfId = $_POST['hdfId']; //โยนค่าไอดี
+                $oldPath = $_POST['hdfOldPath'];
+               if($txtTitleActivity !=  $resultSelNewsEdit['news_name'])
+               {
+                 $sqlUpdateName = "UPDATE `news` SET `news_name` = '$txtTitleActivity' WHERE `news_id` = '$hdfId'";
+                 $queryUpdateName = $conn->query($sqlUpdateName);
+               }
+               if($resultSelNewsEdit != $editor1)
+               {
+                   $sqlUpdateDetails = "UPDATE `news` SET `news_details` = '$editor1' WHERE `news_id` = '$hdfId'";
+                   $queryUpdateName = $conn->query($sqlUpdateDetails);
+               }
+             
                 /*Random ชื่อ*/
-                //$randFileName = generateRandomString(15);
+                $randFileName = generateRandomString(15);
                 /*upload file*/
               
-              /* if(move_uploaded_file($_FILES["fileBanner"]["tmp_name"],"drive/$randFileName".$_FILES["fileBanner"]["name"]))
+              if(move_uploaded_file($_FILES["fileBanner"]["tmp_name"],"drive/$randFileName".$_FILES["fileBanner"]["name"]))
                  {
                     $fileNameUp = $randFileName.$_FILES["fileBanner"]["name"];
-                   
-                    $sqlUpfile = "INSERT INTO file (path, news_id) VALUES ('$fileNameUp', '$resultMaxNews')";
+                    $sqlUpfile = "UPDATE file SET `path` = '$fileNameUp' WHERE news_id = '$hdfId'";
                     $queryUpfile = $conn->query($sqlUpfile);
-                 } */
-        
-           
+                    
+                    unlink($oldPath);
+                 }
+           /*กลับหน้าเดิม*/
+           header( "location: edit-activity.php?id=$hdfId" );
+           exit(0);
+                
     }
      
 ?>
@@ -137,16 +147,16 @@
                                 <input name="txtTitleActivity" type="text" class="form form-control" placeholder="กรอกชื่อกิจกรรม" value="<?php echo $resultSelNewsEdit['news_name'];?>" required />
                             </div>
                            </div>
-                            <div class="col-xs-2"><button class="btn btn-success" title="บันทีก" type="submit"><span class="fa fa-save"></span></button></div>
+                            <div class="col-xs-2"><button name="btnSubmit" class="btn btn-success" title="บันทีก" type="submit"><span class="fa fa-save"></span></button></div>
                         </div>
                           <br>
                           <div class="row">
-                            <div class="col-xs-12"><label>แนบรูปแบนเนอร์:</label></div>
+                            <div class="col-xs-12"><label>เปลี่ยนรูปแบนเนอร์:</label></div>
                           </div>
                        
                         <div class="row">
                             <div class="col-xs-12">
-                                    <input type="file" name="fileBanner"  required/>
+                                    <input type="file" name="fileBanner"/>
                             </div>
                         </div>
                           <br>
@@ -172,13 +182,13 @@
                                              <div class="box-body">
                                                 <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
                                                   <ol class="carousel-indicators">
-                                                    <li data-target="#carousel-example-generic" data-slide-to="0" class=""></li>
+                                                   <!-- <li data-target="#carousel-example-generic" data-slide-to="0" class=""></li> -->
                                                     <li data-target="#carousel-example-generic" data-slide-to="1" class="active"></li>
-                                                    <li data-target="#carousel-example-generic" data-slide-to="2" class=""></li>
+                                                  <!--  <li data-target="#carousel-example-generic" data-slide-to="2" class=""></li> -->
                                                   </ol>
                                                   <div class="carousel-inner">
                                                     <div class="item active">
-                                                        <img src="<?php echo "drive/".$resultSelNewsEdit['path'];?>" alt="First slide">
+                                                        <img src="<?php echo $oldPath2 =  "drive/".$resultSelNewsEdit['path'];?>" alt="First slide">
 
                                                       <div class="carousel-caption">
                                                         ภาพแบนเนอร์
@@ -227,11 +237,14 @@
                                             </textarea>
                                       
                                     </div>
-                                  </form>
+                                    
+                                 
                                 <!--.CK EDITOR-->
                               
                             </div>
                         </div>
+                            <input type="hidden" name="hdfId" value="<?php echo $newsIDFromNews; ?>" />
+                            <input type="hidden" name="hdfOldPath" value="<?php echo $oldPath2; ?>" />
                       </form>
                   </div>
                   <!--.content-->
