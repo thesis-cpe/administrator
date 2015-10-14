@@ -5,30 +5,37 @@
  {  /*inlude db connect*/
      include_once './include/sc-login.php'; //เชื่อมต่อฐานข้อมูล
      include_once './include/function_lib.php'; //เรียก LIB 
+     /*รับค่ามาจากหน้า news.php*/
+     $newsIDFromNews = $_GET['id'];
+      /*เลือกค่าออกมา จาก DB*/
+        $sqlSelNewsEdit = "SELECT * FROM news JOIN file ON news.news_id = file.news_id WHERE news.news_id = '$newsIDFromNews'";
+        $querySelNewsEdit = $conn->query($sqlSelNewsEdit);
+        $resultSelNewsEdit = $querySelNewsEdit->fetch_assoc();
+        
      /*ถ้ามีการ POST ค่ามา*/
      if(isset($_POST['txtTitleActivity'])){
                 $newsId = NULL; $productID = NULL;   
                 $txtTitleActivity = $_POST['txtTitleActivity'];
                 $editor1 = $_POST['editor1'];
-                $sqlNews = "INSERT INTO news (news_name, news_details) VALUES ('$txtTitleActivity', '$editor1')";
+                /*$sqlNews = "INSERT INTO news (news_name, news_details) VALUES ('$txtTitleActivity', '$editor1')";
                 $queryNews = $conn->query($sqlNews);
                 $sqlSelMaxNews = "SELECT max(news_id) AS max_news FROM `news` ";
                 $queryMaxNews = $conn->query($sqlSelMaxNews);
                 $fetchMaxNews = $queryMaxNews->fetch_assoc();
-                $resultMaxNews =   $fetchMaxNews['max_news'];
+                $resultMaxNews =   $fetchMaxNews['max_news']; */
                 /*Random ชื่อ*/
-                $randFileName = generateRandomString(15);
+                //$randFileName = generateRandomString(15);
                 /*upload file*/
               
-               if(move_uploaded_file($_FILES["fileBanner"]["tmp_name"],"drive/$randFileName".$_FILES["fileBanner"]["name"]))
+              /* if(move_uploaded_file($_FILES["fileBanner"]["tmp_name"],"drive/$randFileName".$_FILES["fileBanner"]["name"]))
                  {
                     $fileNameUp = $randFileName.$_FILES["fileBanner"]["name"];
                    
                     $sqlUpfile = "INSERT INTO file (path, news_id) VALUES ('$fileNameUp', '$resultMaxNews')";
                     $queryUpfile = $conn->query($sqlUpfile);
-                 }
+                 } */
         
-        
+           
     }
      
 ?>
@@ -127,7 +134,7 @@
                            <div class="col-xs-10">
                             <div class="input-group">
                                 <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
-                                <input name="txtTitleActivity" type="text" class="form form-control" placeholder="กรอกชื่อกิจกรรม" required />
+                                <input name="txtTitleActivity" type="text" class="form form-control" placeholder="กรอกชื่อกิจกรรม" value="<?php echo $resultSelNewsEdit['news_name'];?>" required />
                             </div>
                            </div>
                             <div class="col-xs-2"><button class="btn btn-success" title="บันทีก" type="submit"><span class="fa fa-save"></span></button></div>
@@ -140,6 +147,56 @@
                         <div class="row">
                             <div class="col-xs-12">
                                     <input type="file" name="fileBanner"  required/>
+                            </div>
+                        </div>
+                          <br>
+                          
+                         
+                          <div class="row">
+                            <div class="col-xs-10">
+                              <!--ภาพ-->  
+                               <div class="box box-default">
+                                    <div class="box-header">
+                                      <h3 class="box-title">ภาพ
+                                        <small>ภาพของของข่าวที่บันทึกไว้</small>
+                                      </h3>
+                                      <!-- tools box -->
+                                      <div class="pull-right box-tools">
+                                        <button type="button" class="btn btn-info btn-sm" data-widget="collapse" data-toggle="tooltip" title="Collapse">
+                                          <i class="fa fa-minus"></i></button>
+                                      </div>
+                                      <!-- /. tools -->
+                                    </div>
+                                   <div class="box-body pad">
+                                    <!--ภาพ-->
+                                             <div class="box-body">
+                                                <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+                                                  <ol class="carousel-indicators">
+                                                    <li data-target="#carousel-example-generic" data-slide-to="0" class=""></li>
+                                                    <li data-target="#carousel-example-generic" data-slide-to="1" class="active"></li>
+                                                    <li data-target="#carousel-example-generic" data-slide-to="2" class=""></li>
+                                                  </ol>
+                                                  <div class="carousel-inner">
+                                                    <div class="item active">
+                                                        <img src="<?php echo "drive/".$resultSelNewsEdit['path'];?>" alt="First slide">
+
+                                                      <div class="carousel-caption">
+                                                        ภาพแบนเนอร์
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                                  <a class="left carousel-control" href="#carousel-example-generic" data-slide="prev">
+                                                    <span class="fa fa-angle-left"></span>
+                                                  </a>
+                                                  <a class="right carousel-control" href="#carousel-example-generic" data-slide="next">
+                                                    <span class="fa fa-angle-right"></span>
+                                                  </a>
+                                                </div>
+                                         </div>
+                                    <!--.ภาพ-->
+                                   </div>
+                               </div>
+                              <!--.ภาพ--> 
                             </div>
                         </div>
                           <br>
@@ -164,7 +221,9 @@
                                     <div class="box-body pad">
                                      
                                             <textarea id="editor1" name="editor1" rows="10" cols="80">
-                                                                    
+                                                          <?php
+                                                             echo $resultSelNewsEdit['news_details'];
+                                                          ?>          
                                             </textarea>
                                       
                                     </div>
