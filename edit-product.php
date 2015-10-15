@@ -33,26 +33,27 @@
              
                 /*Random ชื่อ*/
                 $randFileName = generateRandomString(15);
+               
                 /*upload file*/
                     for($i=0;$i<count($_FILES["fileProduct"]["name"]);$i++)
-                    {
+                    {  
                         if($_FILES["fileProduct"]["name"][$i] != "")
                         { 
                             $genName = generateRandomString(15);
-                                if(move_uploaded_file($_FILES["fileProduct"]["tmp_name"][$i],"../drive/$genName".$_FILES["fileProduct"]["name"][$i]))
+                                if(move_uploaded_file($_FILES["fileProduct"]["tmp_name"][$i],"drive/$genName".$_FILES["fileProduct"]["name"][$i]))
                                 {
 
-                                        echo "Copy/Upload Complete<br>";
+                                        
                                         /*ลงดีบี*/
-                                       echo $pathFile = $genName.$_FILES["fileProduct"]["name"][$i];
-                                       /* $sqlInsertFile = "INSERT INTO file ( path, product_id) VALUES ('$pathFile', '$varProductID')";
-                                        $queryInsertFile = $conn->query($sqlInsertFile); */
-                                       $sqlUpfile = "UPDATE file SET path = '$fileNameUp' WHERE product_id = '$hdfId'";
-                                        $queryUpfile = $conn->query($sqlUpfile);
-                                        //นึการลบไฟล์ไม่ออก
+                                       $pathFile[$i] = $genName.$_FILES["fileProduct"]["name"][$i];
+                                       
+                                       $sqlUpfile = "UPDATE file SET path = '$pathFile[$i]' WHERE product_id = '$hdfId'";
+                                       $queryUpfile = $conn->query($sqlUpfile);
+                                      
+                                       //นึการลบไฟล์ไม่ออก
                                 }   
                         }
-                    }  
+                   }  
                     
             /*  if(move_uploaded_file($_FILES["fileBanner"]["tmp_name"],"drive/$randFileName".$_FILES["fileBanner"]["name"]))
                  {
@@ -78,6 +79,7 @@
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <!-- Bootstrap 3.3.5 -->
   <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+  
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
   <!-- Ionicons -->
@@ -89,8 +91,8 @@
   <link rel="stylesheet" href="dist/css/skins/_all-skins.min.css">
   <!-- bootstrap wysihtml5 - text editor -->
   <link rel="stylesheet" href="plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
-   
-
+  
+  <!-- .bootstrap gall -->
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
   <!--[if lt IE 9]>
@@ -132,7 +134,7 @@
     <section class="content-header">
       <h1>
           เพิ่มกิจกรรม 
-          <small><a href="news.php">กลับไปยังหน้ากิจกรรม</a></small>
+          <small><a href="product.php">กลับไปยังหน้าของที่ระลึก</a></small>
       </h1>
       <ol class="breadcrumb">
        <!-- <li><a href="#"><i class="fa fa-dashboard"></i> Level</a></li>
@@ -208,29 +210,27 @@
                                    <div class="box-body pad">
                                     <!--ภาพ-->
                                              <div class="box-body">
-                                                <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
-                                                  <ol class="carousel-indicators">
-                                                   <!-- <li data-target="#carousel-example-generic" data-slide-to="0" class=""></li> -->
-                                                    <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
-                                                  <!--  <li data-target="#carousel-example-generic" data-slide-to="2" class=""></li> -->
-                                                  </ol>
-                                                  <div class="carousel-inner">
-                                                    <div >
-                                                        <center><img src="<?php echo $oldPath2 =  "drive/".$resultSelNewsEdit['path'];?>" alt="First slide"></center>
-
-                                                      <div class="carousel-caption">
-                                                        ตัวอย่างของที่ระลึก
+                                                <!--ส่วนเนือ้หา-->
+                                                 <div class="container">
+                                                      <div class="row">
+                                                         <div class="col-md-9">
+                                                         <?php 
+                                                           $qurySelpathImg = mysqli_query($conn, $sqlSelNewsEdit);
+                                                           while($arrSelPathImg = mysqli_fetch_array($qurySelpathImg))
+                                                            { $pathImg = $arrSelPathImg['path'];
+                                                         ?>
+                                                                <div class="col-lg-3 col-md-4 col-xs-6 thumb">
+                                                                     <a class="thumbnail" href="drive/<?php echo $pathImg; ?>" target="_blank">
+                                                                         <img class="img-responsive" src="drive/<?php echo $pathImg; ?>">
+                                                                     </a>
+                                                                 </div> 
+                                                       <?php }?>
+                                                        
+                                                         </div>
                                                       </div>
-                                                    </div>
-                                                  </div>
-                                                  <a class="left carousel-control" href="#carousel-example-generic" data-slide="prev">
-                                                    <span class="fa fa-angle-left"></span>
-                                                  </a>
-                                                  <a class="right carousel-control" href="#carousel-example-generic" data-slide="next">
-                                                    <span class="fa fa-angle-right"></span>
-                                                  </a>
-                                                </div>
-                                         </div>
+                                                  </div> 
+                                                <!--.ส่วนเนือ้หา-->
+                                            </div>
                                     <!--.ภาพ-->
                                    </div>
                                </div>
