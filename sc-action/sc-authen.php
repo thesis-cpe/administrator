@@ -46,7 +46,7 @@ and open the template in the editor.
         }else
         {
             echo "username or password not found"."<br>"; ?>
-        <a href="../index.php">back to login</a>
+        <a href="../login.php">back to login</a>
             
   <?php } ?>
         

@@ -188,7 +188,7 @@
                                                   </ol>
                                                   <div class="carousel-inner">
                                                     <div class="item active">
-                                                        <img src="<?php echo $oldPath2 =  "drive/".$resultSelNewsEdit['path'];?>" alt="First slide">
+                                                        <center><img src="<?php echo $oldPath2 =  "drive/".$resultSelNewsEdit['path'];?>" alt="First slide"></center>
 
                                                       <div class="carousel-caption">
                                                         ภาพแบนเนอร์

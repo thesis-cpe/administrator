@@ -92,11 +92,19 @@
                                                     <form action="#" method="post">
                                                     <div class="form-group">
                                                         <label>ชือผู้ใช้งาน:</label>
-                                                        <input class="form-control" name="txtFacebook" placeholder="username" type="email">
+                                                        <input class="form-control" name="txtUserName" placeholder="username" type="email">
                                                     </div>
                                                     <div class="form-group">
-                                                        <label>รหัสผ่าน:</label>
-                                                        <input class="form-control" name="txtYoutube" placeholder="passwords" type="email">
+                                                        <label>รหัสผ่านเดิม:</label>
+                                                        <input class="form-control" name="txtPass" placeholder="passwords" type="password">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>รหัสผ่านใหม่:</label>
+                                                        <input class="form-control" name="txtPassNew" placeholder="passwords" type="password">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>ยืนยันรหัสผ่านใหม่:</label>
+                                                        <input class="form-control" name="txtPassNew1" placeholder="passwords" type="password">
                                                     </div>
                                                    
                                                       <div class="col-md-offset-11"> 

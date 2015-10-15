@@ -5,31 +5,67 @@
  {  /*inlude db connect*/
      include_once './include/sc-login.php'; //เชื่อมต่อฐานข้อมูล
      include_once './include/function_lib.php'; //เรียก LIB 
+     /*รับค่ามาจากหน้า news.php*/
+     $newsIDFromNews = $_GET['id'];
+      /*เลือกค่าออกมา จาก DB*/
+        $sqlSelNewsEdit = "SELECT * FROM product JOIN file ON product.product_id = file.product_id WHERE product.product_id = '$newsIDFromNews'";
+        $querySelNewsEdit = $conn->query($sqlSelNewsEdit);
+        $resultSelNewsEdit = $querySelNewsEdit->fetch_assoc();
+        
+        
      /*ถ้ามีการ POST ค่ามา*/
-     if(isset($_POST['txtTitleActivity'])){
+     if(isset($_POST['btnSubmit'])){
                 $newsId = NULL; $productID = NULL;   
                 $txtTitleActivity = $_POST['txtTitleActivity'];
                 $editor1 = $_POST['editor1'];
-                $sqlNews = "INSERT INTO news (news_name, news_details) VALUES ('$txtTitleActivity', '$editor1')";
-                $queryNews = $conn->query($sqlNews);
-                $sqlSelMaxNews = "SELECT max(news_id) AS max_news FROM `news` ";
-                $queryMaxNews = $conn->query($sqlSelMaxNews);
-                $fetchMaxNews = $queryMaxNews->fetch_assoc();
-                $resultMaxNews =   $fetchMaxNews['max_news'];
+                $hdfId = $_POST['hdfId']; //โยนค่าไอดี
+                $oldPath = $_POST['hdfOldPath'];
+               if($txtTitleActivity !=  $resultSelNewsEdit['product_name'])
+               {
+                 $sqlUpdateName = "UPDATE `product` SET `product_name` = '$txtTitleActivity' WHERE `product_id` = '$hdfId'";
+                 $queryUpdateName = $conn->query($sqlUpdateName);
+               }
+               if($resultSelNewsEdit['product_details'] != $editor1)
+               {
+                   $sqlUpdateDetails = "UPDATE `product` SET `product_details` = '$editor1' WHERE `product_id` = '$hdfId'";
+                   $queryUpdateName = $conn->query($sqlUpdateDetails);
+               }
+             
                 /*Random ชื่อ*/
                 $randFileName = generateRandomString(15);
                 /*upload file*/
-              
-               if(move_uploaded_file($_FILES["fileBanner"]["tmp_name"],"drive/$randFileName".$_FILES["fileBanner"]["name"]))
+                    for($i=0;$i<count($_FILES["fileProduct"]["name"]);$i++)
+                    {
+                        if($_FILES["fileProduct"]["name"][$i] != "")
+                        { 
+                            $genName = generateRandomString(15);
+                                if(move_uploaded_file($_FILES["fileProduct"]["tmp_name"][$i],"../drive/$genName".$_FILES["fileProduct"]["name"][$i]))
+                                {
+
+                                        echo "Copy/Upload Complete<br>";
+                                        /*ลงดีบี*/
+                                       echo $pathFile = $genName.$_FILES["fileProduct"]["name"][$i];
+                                       /* $sqlInsertFile = "INSERT INTO file ( path, product_id) VALUES ('$pathFile', '$varProductID')";
+                                        $queryInsertFile = $conn->query($sqlInsertFile); */
+                                       $sqlUpfile = "UPDATE file SET path = '$fileNameUp' WHERE product_id = '$hdfId'";
+                                        $queryUpfile = $conn->query($sqlUpfile);
+                                        //นึการลบไฟล์ไม่ออก
+                                }   
+                        }
+                    }  
+                    
+            /*  if(move_uploaded_file($_FILES["fileBanner"]["tmp_name"],"drive/$randFileName".$_FILES["fileBanner"]["name"]))
                  {
                     $fileNameUp = $randFileName.$_FILES["fileBanner"]["name"];
-                   
-                    $sqlUpfile = "INSERT INTO file (path, news_id) VALUES ('$fileNameUp', '$resultMaxNews')";
+                    $sqlUpfile = "UPDATE file SET path = '$fileNameUp' WHERE product_id = '$hdfId'";
                     $queryUpfile = $conn->query($sqlUpfile);
-                 }
-        
-        header( "location: news.php" );
-        exit(0); 
+                    
+                    unlink($oldPath);
+                 } */
+           /*กลับหน้าเดิม*/
+           header( "location: edit-product.php?id=$hdfId" );
+           exit(0);
+                
     }
      
 ?>
@@ -61,6 +97,7 @@
   <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
   <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
   <![endif]-->
+
 </head>
 
 <body class="hold-transition skin-blue sidebar-mini">
@@ -128,19 +165,76 @@
                            <div class="col-xs-10">
                             <div class="input-group">
                                 <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
-                                <input name="txtTitleActivity" type="text" class="form form-control" placeholder="กรอกชื่อกิจกรรม" required />
+                                <input name="txtTitleActivity" type="text" class="form form-control" placeholder="กรอกชื่อกิจกรรม" value="<?php echo $resultSelNewsEdit['product_name'];?>" required />
                             </div>
                            </div>
-                            <div class="col-xs-2"><button class="btn btn-success" title="บันทีก" type="submit"><span class="fa fa-save"></span></button></div>
+                            <div class="col-xs-2"><button name="btnSubmit" class="btn btn-success" title="บันทีก" type="submit"><span class="fa fa-save"></span></button></div>
                         </div>
                           <br>
                           <div class="row">
-                            <div class="col-xs-12"><label>แนบรูปแบนเนอร์:</label></div>
+                              <div class="col-xs-12"><label>เปลี่ยนรูปตัวอย่างสินค้า:</label><small>เปลี่ยนภาพตัวอย่างของที่ระลึกแบบยกชุด</small></div>
                           </div>
                        
                         <div class="row">
-                            <div class="col-xs-12">
-                                    <input type="file" name="fileBanner"  required/>
+                            <div class="col-xs-9">
+                                  <!--  <input type="file" name="fileBanner"/> -->
+                                <ol id="olFile">
+                                    <li><input name="fileProduct[]" type="file"></li>
+                                </ol>
+                            </div>
+                            <div class="col-xs-2">
+                                 <button class="btn btn-sm btn-primary" type="button" id="btnAddFile" title="แนบไฟล์เพิ่ม"><span class="fa fa-plus"></span></button>
+                                 <button class="btn btn-sm btn-danger" type="button" id="btnRemove" title="ลบไฟล์ที่แนบ"><span class="fa fa-minus"></span></button>
+                             </div>
+                        </div>
+                          <br>
+                          
+                         
+                          <div class="row">
+                            <div class="col-xs-10">
+                              <!--ภาพ-->  
+                               <div class="box box-default">
+                                    <div class="box-header">
+                                      <h3 class="box-title">ภาพ
+                                        <small>ภาพของที่ระลึก</small>
+                                      </h3>
+                                      <!-- tools box -->
+                                      <div class="pull-right box-tools">
+                                        <button type="button" class="btn btn-info btn-sm" data-widget="collapse" data-toggle="tooltip" title="Collapse">
+                                          <i class="fa fa-minus"></i></button>
+                                      </div>
+                                      <!-- /. tools -->
+                                    </div>
+                                   <div class="box-body pad">
+                                    <!--ภาพ-->
+                                             <div class="box-body">
+                                                <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+                                                  <ol class="carousel-indicators">
+                                                   <!-- <li data-target="#carousel-example-generic" data-slide-to="0" class=""></li> -->
+                                                    <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
+                                                  <!--  <li data-target="#carousel-example-generic" data-slide-to="2" class=""></li> -->
+                                                  </ol>
+                                                  <div class="carousel-inner">
+                                                    <div >
+                                                        <center><img src="<?php echo $oldPath2 =  "drive/".$resultSelNewsEdit['path'];?>" alt="First slide"></center>
+
+                                                      <div class="carousel-caption">
+                                                        ตัวอย่างของที่ระลึก
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                                  <a class="left carousel-control" href="#carousel-example-generic" data-slide="prev">
+                                                    <span class="fa fa-angle-left"></span>
+                                                  </a>
+                                                  <a class="right carousel-control" href="#carousel-example-generic" data-slide="next">
+                                                    <span class="fa fa-angle-right"></span>
+                                                  </a>
+                                                </div>
+                                         </div>
+                                    <!--.ภาพ-->
+                                   </div>
+                               </div>
+                              <!--.ภาพ--> 
                             </div>
                         </div>
                           <br>
@@ -165,15 +259,20 @@
                                     <div class="box-body pad">
                                      
                                             <textarea id="editor1" name="editor1" rows="10" cols="80">
-                                                                    
+                                                          <?php
+                                                             echo $resultSelNewsEdit['product_details'];
+                                                          ?>          
                                             </textarea>
                                       
                                     </div>
-                                  </form>
+                                    
+                                 
                                 <!--.CK EDITOR-->
                               
                             </div>
                         </div>
+                            <input type="hidden" name="hdfId" value="<?php echo $newsIDFromNews; ?>" />
+                            <input type="hidden" name="hdfOldPath" value="<?php echo $oldPath2; ?>" />
                       </form>
                   </div>
                   <!--.content-->
@@ -295,6 +394,22 @@
     //bootstrap WYSIHTML5 - text editor
     $(".textarea").wysihtml5();
   });
+</script>
+<!--add element-->
+<script>
+$(document).ready(function(){
+   $("#btnAddFile").click(function(){
+        $("#olFile").append("<li  id='olFile1'><input type='file'  name='fileProduct[]'/></li>");
+    });
+});
+</script>
+<!--remove element-->
+<script>
+    $(document).ready(function(){
+        $("#btnRemove").click(function(){
+            $("#olFile1").remove();
+        });
+    });
 </script>
 </body>
 </html>

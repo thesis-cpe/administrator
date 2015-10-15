@@ -1,7 +1,7 @@
 <?php
 @session_start();
  if($_SESSION["user"])
- {
+ {     include_once './include/sc-login.php';
 ?>
 <!DOCTYPE html>
 
@@ -88,7 +88,7 @@
       <div class="row">
           <div class="col-xs-12">
                <!--นำเข้าหน้ารายการกิจกรรม-->
-            <?php include "./include/data_product.html";?>
+            <?php include "./include/data_product.php";?>
          </div><!-- /.col-xs-12 -->
       </div><!-- /row -->
       <!-- .Your Page Content Here -->

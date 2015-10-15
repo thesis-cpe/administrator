@@ -1,7 +1,8 @@
 <?php
 @session_start();
  if($_SESSION["user"])
- {
+ {   
+     include_once './include/sc-login.php';
 ?>
 <!DOCTYPE html>
 
@@ -33,24 +34,9 @@
   <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
   <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
   <![endif]-->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+ <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script> -->
   
-  <!--add element-->
-<script>
-$(document).ready(function(){
-   $("#btnAddFile").click(function(){
-        $("#olFile").append("<li  id='olFile1'><input type='file'  name='fileProduct[]'/></li>");
-    });
-});
-</script>
-  <!--remove element-->
-  <script>
-    $(document).ready(function(){
-        $("#btnRemove").click(function(){
-            $("#olFile1").remove();
-        });
-    });
-   </script>
+  
 
 </head>
 
@@ -291,6 +277,22 @@ $(document).ready(function(){
   });
 </script>
 
+<!--add element-->
+<script>
+$(document).ready(function(){
+   $("#btnAddFile").click(function(){
+        $("#olFile").append("<li  id='olFile1'><input type='file'  name='fileProduct[]'/></li>");
+    });
+});
+</script>
+  <!--remove element-->
+  <script>
+    $(document).ready(function(){
+        $("#btnRemove").click(function(){
+            $("#olFile1").remove();
+        });
+    });
+   </script>
 
 </body>
 </html>
